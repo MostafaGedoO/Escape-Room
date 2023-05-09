@@ -32,28 +32,17 @@ public class DoorHandel : XRBaseInteractable
         {
             var interactorTransform = firstInteractorSelecting.GetAttachTransform(this);
 
-            //we get the vector that goes from this to the interactor
             Vector3 selfToInteractor = interactorTransform.position - transform.position;
 
-            //project onto the movement vector
             float forceInDirectionOfDrag = Vector3.Dot(selfToInteractor, m_WorldDragDirection);
 
-            //we then need to check in which direction are we dragging : toward the end (positive direction) or toward
-            //the start (megative direction)
             bool dragToEnd = forceInDirectionOfDrag > 0.0f;
 
-            //we take the absolute of that value now, as we need a speed, not a direction anymore
             float absoluteForce = Mathf.Abs(forceInDirectionOfDrag);
 
-            //we transform our force into a speed (by dividing it by delta Time). Then we "scale" that speed by the door
-            //weight. The "heavier" the door, the lower the speed will be.
             float speed = absoluteForce / Time.deltaTime / doorWeight;
 
-            //finally we move the target either toward end or start based on the speed.
-            draggedTransform.position = Vector3.MoveTowards(draggedTransform.position,
-                //the target depend on the direction of drag we recovered earlier
-                dragToEnd ? m_EndPosition : m_StartPosition,
-                speed * Time.deltaTime);
+            draggedTransform.position = Vector3.MoveTowards(draggedTransform.position, dragToEnd ? m_EndPosition : m_StartPosition, speed * Time.deltaTime);
 
         }
     }
